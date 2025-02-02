@@ -1,28 +1,22 @@
 const mongoose = require("mongoose");
 
 const faqSchema = new mongoose.Schema({
-  question: { type: String, required: true },
-  answer: { type: String, required: true },
-  translations: {
-    hi: {
-      question: String,
-      answer: String,
-    },
-    bn: {
-      question: String,
-      answer: String,
-    },
-  },
+  question_en: { type: String, required: true },
+  answer_en: { type: String, required: true },
+  question_hi: { type: String },
+  answer_hi: { type: String },
+  question_bn: { type: String },
+  answer_bn: { type: String },
+  question_fr: { type: String },
+  answer_fr: { type: String },
 });
 
-faqSchema.methods.getTranslatedText = function (lang) {
-  if (this.translations[lang]) {
-    return {
-      question: this.translations[lang].question || this.question,
-      answer: this.translations[lang].answer || this.answer,
-    };
-  }
-  return { question: this.question, answer: this.answer };
+// Method to get translated text dynamically
+faqSchema.methods.getTranslation = function (lang) {
+  return {
+    question: this[`question_${lang}`] || this.question_en,
+    answer: this[`answer_${lang}`] || this.answer_en,
+  };
 };
 
 const FAQ = mongoose.model("FAQ", faqSchema);
